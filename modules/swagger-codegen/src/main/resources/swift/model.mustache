@@ -10,7 +10,41 @@ import Foundation
 {{#description}}
 
 /** {{description}} */{{/description}}
-public class {{classname}}: JSONEncodable {
+
+{{#isEnum}}
+
+public class {{classname}} : NSObject {
+
+    public enum {{classname}}Enum : String {
+        case UNKNOWN = "UNKNOWN"
+        {{#allowableValues}}case {{.}}="{{.}}"{{^-last}}
+        {{/-last}}{{/allowableValues}}
+    }
+
+    var value: {{classname}}Enum
+    init(value: String) {
+        self.value = {{classname}}Enum(rawValue: value) ?? .UNKNOWN
+    }
+
+    public override var description: String { 
+        return value.rawValue 
+    }
+
+    func encodeToJSON() -> AnyObject {
+        return ["{{classname}}": self.value.rawValue]
+    }
+
+    override public var hashValue : Int {
+
+        get {
+            return self.value.rawValue.hash
+        }
+    }
+}
+{{/isEnum}}
+
+{{^isEnum}}
+public class {{classname}}: NSObject, JSONEncodable {
 {{#vars}}{{#isEnum}}
     public enum {{datatypeWithEnum}}: String { {{#allowableValues}}{{#values}}
         case {{enum}} = "{{raw}}"{{/values}}{{/allowableValues}}
@@ -21,7 +55,7 @@ public class {{classname}}: JSONEncodable {
     {{/description}}public var {{name}}: {{{datatype}}}{{^unwrapRequired}}?{{/unwrapRequired}}{{#unwrapRequired}}{{^required}}?{{/required}}{{#required}}!{{/required}}{{/unwrapRequired}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/isEnum}}
     {{/vars}}
 
-    public init() {}
+    public override init() {}
 
     // MARK: JSONEncodable
     func encodeToJSON() -> AnyObject {
@@ -33,5 +67,7 @@ public class {{classname}}: JSONEncodable {
         let dictionary: [String:AnyObject] = APIHelper.rejectNil(nillableDictionary) ?? [:]
         return dictionary
     }
-}{{/model}}
+}
+{{/isEnum}}
+{{/model}}
 {{/models}}
