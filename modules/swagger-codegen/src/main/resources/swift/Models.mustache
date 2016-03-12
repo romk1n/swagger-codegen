@@ -10,6 +10,11 @@ protocol JSONEncodable {
     func encodeToJSON() -> AnyObject
 }
 
+@objc
+protocol DecoderProcessable {
+    optional func decoderFinished()
+}
+
 public class Response<T> {
     public let statusCode: Int
     public let header: [String: String]
@@ -139,6 +144,7 @@ class Decoders {
                 let instance = {{classname}}(){{#vars}}{{#isEnum}}
                 instance.{{name}} = {{classname}}.{{datatypeWithEnum}}(rawValue: (sourceDictionary["{{name}}"] as? String) ?? ""){{#unwrapRequired}}{{#required}}!{{/required}}{{/unwrapRequired}} {{/isEnum}}{{^isEnum}}
                 instance.{{name}} = Decoders.decode{{^unwrapRequired}}Optional{{/unwrapRequired}}{{#unwrapRequired}}{{^required}}Optional{{/required}}{{/unwrapRequired}}(clazz: {{{baseType}}}.self, source: sourceDictionary["{{name}}"]{{#unwrapRequired}}{{#required}}!{{/required}}{{/unwrapRequired}}){{/isEnum}}{{/vars}}
+                (instance as DecoderProcessable).decoderFinished?()
                 return instance
                 {{/isEnum}}
             }{{/model}}

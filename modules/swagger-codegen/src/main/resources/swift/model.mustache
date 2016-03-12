@@ -44,7 +44,7 @@ public class {{classname}} : NSObject {
 {{/isEnum}}
 
 {{^isEnum}}
-public class {{classname}}: NSObject, JSONEncodable {
+public class {{classname}}: NSObject, JSONEncodable, DecoderProcessable {
 {{#vars}}{{#isEnum}}
     public enum {{datatypeWithEnum}}: String { {{#allowableValues}}{{#values}}
         case {{enum}} = "{{raw}}"{{/values}}{{/allowableValues}}
