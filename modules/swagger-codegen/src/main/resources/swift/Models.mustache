@@ -11,8 +11,9 @@ protocol JSONEncodable {
 }
 
 @objc
-protocol DecoderProcessable {
-    optional func decoderFinished()
+protocol ModelLifecycle {
+    optional func didInit()
+    optional func willDeInit()
 }
 
 public class Response<T> {
@@ -51,10 +52,12 @@ class Decoders {
     }
     
     static func decode<T, Key: Hashable>(clazz clazz: [Key:T].Type, source: AnyObject) -> [Key:T] {
-        let sourceDictinoary = source as! [Key: AnyObject]
+
         var dictionary = [Key:T]()
-        for (key, value) in sourceDictinoary {
+        if let sourceDictinoary = source as? [Key: AnyObject] {
+            for (key, value) in sourceDictinoary {
             dictionary[key] = Decoders.decode(clazz: T.self, source: value)
+        }
         }
         return dictionary
     }
@@ -136,15 +139,18 @@ class Decoders {
 			// Decoder for {{{classname}}}
             Decoders.addDecoder(clazz: {{{classname}}}.self) { (source: AnyObject) -> {{{classname}}} in
                 {{#isEnum}}
-                    let object = source as! String
+                    let object = (source as? String) ?? ""
                     return {{{classname}}}(value:object)
                 {{/isEnum}}
                 {{^isEnum}}
-                let sourceDictionary = source as! [NSObject:AnyObject]
+                guard let sourceDictionary = source as? [NSObject:AnyObject] else {
+                    return {{classname}}()
+                }
+                
                 let instance = {{classname}}(){{#vars}}{{#isEnum}}
                 instance.{{name}} = {{classname}}.{{datatypeWithEnum}}(rawValue: (sourceDictionary["{{name}}"] as? String) ?? ""){{#unwrapRequired}}{{#required}}!{{/required}}{{/unwrapRequired}} {{/isEnum}}{{^isEnum}}
                 instance.{{name}} = Decoders.decode{{^unwrapRequired}}Optional{{/unwrapRequired}}{{#unwrapRequired}}{{^required}}Optional{{/required}}{{/unwrapRequired}}(clazz: {{{baseType}}}.self, source: sourceDictionary["{{name}}"]{{#unwrapRequired}}{{#required}}!{{/required}}{{/unwrapRequired}}){{/isEnum}}{{/vars}}
-                (instance as DecoderProcessable).decoderFinished?()
+                (instance as ModelLifecycle).didInit?()
                 return instance
                 {{/isEnum}}
             }{{/model}}

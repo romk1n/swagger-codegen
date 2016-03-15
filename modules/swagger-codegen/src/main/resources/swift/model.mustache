@@ -44,7 +44,7 @@ public class {{classname}} : NSObject {
 {{/isEnum}}
 
 {{^isEnum}}
-public class {{classname}}: NSObject, JSONEncodable, DecoderProcessable {
+public class {{classname}}: NSObject, JSONEncodable, ModelLifecycle {
 {{#vars}}{{#isEnum}}
     public enum {{datatypeWithEnum}}: String { {{#allowableValues}}{{#values}}
         case {{enum}} = "{{raw}}"{{/values}}{{/allowableValues}}
@@ -56,6 +56,11 @@ public class {{classname}}: NSObject, JSONEncodable, DecoderProcessable {
     {{/vars}}
 
     public override init() {}
+
+    deinit {
+    
+         (self as ModelLifecycle).willDeInit?()
+    }
 
     // MARK: JSONEncodable
     func encodeToJSON() -> AnyObject {
