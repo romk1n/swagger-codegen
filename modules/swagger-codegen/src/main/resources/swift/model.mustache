@@ -31,7 +31,10 @@ public class {{classname}} : NSObject {
     }
 
     func encodeToJSON() -> AnyObject {
-        return ["{{classname}}": self.value.rawValue]
+        var nillableDictionary = [String:AnyObject?]()
+        nillableDictionary["{{classname}}"] = self.value.rawValue
+        let dictionary: [String:AnyObject] = APIHelper.rejectNil(nillableDictionary) ?? [:]
+        return dictionary
     }
 
     override public var hashValue : Int {
