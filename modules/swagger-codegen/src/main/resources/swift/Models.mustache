@@ -6,6 +6,12 @@
 
 import Foundation
 
+@objc
+protocol ModelLifecycle {
+    optional func didInit()
+    optional func willDeInit()
+}
+
 protocol JSONEncodable {
     func encodeToJSON() -> AnyObject
 }
@@ -46,10 +52,11 @@ class Decoders {
     }
     
     static func decode<T, Key: Hashable>(clazz clazz: [Key:T].Type, source: AnyObject) -> [Key:T] {
-        let sourceDictinoary = source as! [Key: AnyObject]
         var dictionary = [Key:T]()
-        for (key, value) in sourceDictinoary {
-            dictionary[key] = Decoders.decode(clazz: T.self, source: value)
+        if let sourceDictinoary = source as? [Key: AnyObject] {
+            for (key, value) in sourceDictinoary {
+                dictionary[key] = Decoders.decode(clazz: T.self, source: value)
+            }
         }
         return dictionary
     }
@@ -136,7 +143,14 @@ class Decoders {
             }
             // Decoder for {{{classname}}}
             Decoders.addDecoder(clazz: {{{classname}}}.self) { (source: AnyObject) -> {{{classname}}} in
-                let sourceDictionary = source as! [NSObject:AnyObject]
+                {{#isEnum}}
+                    let object = (source as? String) ?? ""
+                    return {{{classname}}}(value:object)
+                {{/isEnum}}
+                {{^isEnum}}
+                guard let sourceDictionary = source as? [NSObject:AnyObject] else {
+                    return {{classname}}()
+                }
                 {{#unwrapRequired}}
                 let instance = {{classname}}({{#requiredVars}}{{^-first}}, {{/-first}}{{#isEnum}}{{name}}: {{classname}}.{{datatypeWithEnum}}(rawValue: (sourceDictionary["{{baseName}}"] as? String) ?? "")! {{/isEnum}}{{^isEnum}}{{name}}: Decoders.decode(clazz: {{{baseType}}}.self, source: sourceDictionary["{{baseName}}"]!){{/isEnum}}{{/requiredVars}})
                 {{#optionalVars}}
@@ -153,7 +167,9 @@ class Decoders {
                 instance.{{name}} = {{classname}}.{{datatypeWithEnum}}(rawValue: (sourceDictionary["{{baseName}}"] as? String) ?? "") {{/isEnum}}{{^isEnum}}
                 instance.{{name}} = Decoders.decodeOptional(clazz: {{{baseType}}}.self, source: sourceDictionary["{{baseName}}"]){{/isEnum}}{{/vars}}
                 {{/unwrapRequired}}
+                (instance as ModelLifecycle).didInit?()
                 return instance
+                {{/isEnum}}
             }{{/model}}
 			{{/models}}
         }
