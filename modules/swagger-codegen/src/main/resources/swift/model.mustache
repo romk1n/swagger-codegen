@@ -63,10 +63,10 @@ public class {{classname}}: NSObject, JSONEncodable, ModelLifecycle {
 {{/vars}}
 
 {{^unwrapRequired}}
-    public init() {}
+    public override init() {}
 {{/unwrapRequired}}
 {{#unwrapRequired}}
-    public init({{#requiredVars}}{{^-first}}, {{/-first}}{{name}}: {{#isEnum}}{{datatypeWithEnum}}!{{/isEnum}}{{^isEnum}}{{datatype}}!{{/isEnum}}{{/requiredVars}}) {
+    public override init({{#requiredVars}}{{^-first}}, {{/-first}}{{name}}: {{#isEnum}}{{datatypeWithEnum}}!{{/isEnum}}{{^isEnum}}{{datatype}}!{{/isEnum}}{{/requiredVars}}) {
         {{#requiredVars}}
         self.{{name}} = {{name}}
         {{/requiredVars}}
