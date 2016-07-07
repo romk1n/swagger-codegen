@@ -28,7 +28,7 @@ class AlamofireRequestBuilder<T>: RequestBuilder<T> {
         let manager = Alamofire.Manager(configuration: configuration)
         managerStore[managerId] = manager
 
-        let encoding = isBody ? Alamofire.ParameterEncoding.JSON : Alamofire.ParameterEncoding.URL
+        let encoding = isBody ? Alamofire.ParameterEncoding.JSON : Alamofire.ParameterEncoding.URLEncodedInURL
         let xMethod = Alamofire.Method(rawValue: method)
         let fileKeys = parameters == nil ? [] : parameters!.filter { $1.isKindOfClass(NSURL) }
                                                            .map { $0.0 }
