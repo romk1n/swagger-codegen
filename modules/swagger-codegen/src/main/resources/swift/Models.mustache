@@ -145,7 +145,7 @@ class Decoders {
             Decoders.addDecoder(clazz: {{{classname}}}.self) { (source: AnyObject) -> {{{classname}}} in
                 {{#isEnum}}
                     let object = (source as? String) ?? ""
-                    return {{{classname}}}(value:object)
+                    return {{{classname}}}(string:object)
                 {{/isEnum}}
                 {{^isEnum}}
                 guard let sourceDictionary = source as? [NSObject:AnyObject] else {

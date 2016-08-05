@@ -20,8 +20,12 @@ public class {{classname}} : NSObject {
     }
 
     var value: {{classname}}Enum
-    init(value: String) {
-        self.value = {{classname}}Enum(rawValue: value) ?? .UNKNOWN
+    init(string: String) {
+        self.value = {{classname}}Enum(rawValue: string) ?? .UNKNOWN
+    }
+
+    init(value: {{classname}}Enum) {
+        self.value = value
     }
 
     public override var description: String { 
