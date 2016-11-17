@@ -30,12 +30,12 @@ public class APIBase {
 }
 
 public class RequestBuilder<T> {
-    var credential: NSURLCredential?
-    var headers: [String:String] = [:]
-    let parameters: [String:AnyObject]?
-    let isBody: Bool
-    let method: String
-    let URLString: String
+    public var credential: NSURLCredential?
+    public var headers: [String:String] = [:]
+    public let parameters: [String:AnyObject]?
+    public let isBody: Bool
+    public let method: String
+    public let URLString: String
     
     required public init(method: String, URLString: String, parameters: [String:AnyObject]?, isBody: Bool) {
         self.method = method
