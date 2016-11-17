@@ -19,12 +19,12 @@ public class {{classname}} : NSObject {
         case {{.}} = "{{.}}"{{/values}}{{/allowableValues}}
     }
 
-    var value: {{classname}}Enum
-    init(string: String) {
+    public var value: {{classname}}Enum
+    public init(string: String) {
         self.value = {{classname}}Enum(rawValue: string) ?? .UNKNOWN
     }
 
-    init(value: {{classname}}Enum) {
+    public init(value: {{classname}}Enum) {
         self.value = value
     }
 
@@ -32,7 +32,7 @@ public class {{classname}} : NSObject {
         return value.rawValue
     }
 
-    func encodeToJSON() -> AnyObject {
+    public func encodeToJSON() -> AnyObject {
         return self.value.rawValue
     }
 
