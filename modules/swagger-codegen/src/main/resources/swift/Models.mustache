@@ -38,7 +38,7 @@ public class Response<T> {
 }
 
 private var once = dispatch_once_t()
-class Decoders {
+public class Decoders {
     static private var decoders = Dictionary<String, ((AnyObject) -> AnyObject)>()
     
     static func addDecoder<T>(clazz clazz: T.Type, decoder: ((AnyObject) -> T)) {
@@ -61,7 +61,7 @@ class Decoders {
         return dictionary
     }
     
-    static func decode<T>(clazz clazz: T.Type, source: AnyObject) -> T {
+    public static func decode<T>(clazz clazz: T.Type, source: AnyObject) -> T {
         initialize()
         if T.self is Int32.Type && source is NSNumber {
             return source.intValue as! T;
