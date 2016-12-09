@@ -39,7 +39,7 @@ open class RequestBuilder<T> {
     
     public var onProgressReady: ((Progress) -> ())?
 
-    required open init(method: String, URLString: String, parameters: [String:Any]?, isBody: Bool) {
+    required public init(method: String, URLString: String, parameters: [String:Any]?, isBody: Bool) {
         self.method = method
         self.URLString = URLString
         self.parameters = parameters

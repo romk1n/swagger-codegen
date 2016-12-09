@@ -25,13 +25,13 @@ open class Response<T> {
     open let header: [String: String]
     open let body: T?
 
-    open init(statusCode: Int, header: [String: String], body: T?) {
+    public init(statusCode: Int, header: [String: String], body: T?) {
         self.statusCode = statusCode
         self.header = header
         self.body = body
     }
 
-    open convenience init(response: HTTPURLResponse, body: T?) {
+    public convenience init(response: HTTPURLResponse, body: T?) {
         let rawHeader = response.allHeaderFields
         var header = [String:String]()
         for (key, value) in rawHeader {
@@ -50,17 +50,17 @@ open class Decoders {
 
     static fileprivate var decoders = Dictionary<String, ((Any) -> Any)>()
     
-    static func addDecoder<T>(clazz clazz: T.Type, decoder: @escaping ((Any) -> T)) {
+    static func addDecoder<T>(clazz: T.Type, decoder: @escaping ((Any) -> T)) {
         let key = "\(T.self)"
         decoders[key] = { decoder($0) as Any }
     }
     
-    static func decode<T>(clazz clazz: [T].Type, source: Any) -> [T] {
+    static func decode<T>(clazz: [T].Type, source: Any) -> [T] {
         let array = source as! [Any]
         return array.map { Decoders.decode(clazz: T.self, source: $0) }
     }
     
-    static func decode<T, Key: Hashable>(clazz clazz: [Key:T].Type, source: Any) -> [Key:T] {
+    static func decode<T, Key: Hashable>(clazz: [Key:T].Type, source: Any) -> [Key:T] {
         var dictionary = [Key:T]()
         if let sourceDictinoary = source as? [Key: Any] {
             for (key, value) in sourceDictinoary {
@@ -70,7 +70,7 @@ open class Decoders {
         return dictionary
     }
     
-    open static func decode<T>(clazz clazz: T.Type, source: Any) -> T {
+    open static func decode<T>(clazz: T.Type, source: Any) -> T {
         initialize()
         if T.self is Int32.Type && source is NSNumber {
             return (source as AnyObject).int32Value as! T;
@@ -90,7 +90,7 @@ open class Decoders {
         }
     }
 
-    static func decodeOptional<T>(clazz clazz: T.Type, source: Any?) -> T? {
+    static func decodeOptional<T>(clazz: T.Type, source: Any?) -> T? {
         if source is NSNull {
             return nil
         }
@@ -99,7 +99,7 @@ open class Decoders {
         }
     }
 
-    static func decodeOptional<T>(clazz clazz: [T].Type, source: Any?) -> [T]? {
+    static func decodeOptional<T>(clazz: [T].Type, source: Any?) -> [T]? {
         if source is NSNull {
             return nil
         }
@@ -108,7 +108,7 @@ open class Decoders {
         }
     }
 
-    static func decodeOptional<T, Key: Hashable>(clazz clazz: [Key:T].Type, source: Any?) -> [Key:T]? {
+    static func decodeOptional<T, Key: Hashable>(clazz: [Key:T].Type, source: Any?) -> [Key:T]? {
         if source is NSNull {
             return nil
         }
@@ -179,7 +179,6 @@ open class Decoders {
                 return instance
                 {{/isEnum}}
             }{{/model}}
-			{{/models}}
-        }
+            {{/models}}
     }
 }

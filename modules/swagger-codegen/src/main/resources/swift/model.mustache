@@ -50,7 +50,7 @@ public class {{classname}} : NSObject {
 open class {{classname}}: NSObject, JSONEncodable, ModelLifecycle {
 {{#vars}}
 {{#isEnum}}
-    open enum {{datatypeWithEnum}}: String { {{#allowableValues}}{{#values}}
+    public enum {{datatypeWithEnum}}: String { {{#allowableValues}}{{#values}}
         case {{enum}} = "{{raw}}"{{/values}}{{/allowableValues}}
     }
 {{/isEnum}}
@@ -67,10 +67,10 @@ open class {{classname}}: NSObject, JSONEncodable, ModelLifecycle {
 {{/vars}}
 
 {{^unwrapRequired}}
-    open override init() {}
+    public override init() {}
 {{/unwrapRequired}}
 {{#unwrapRequired}}
-    open override init({{#requiredVars}}{{^-first}}, {{/-first}}{{name}}: {{#isEnum}}{{datatypeWithEnum}}!{{/isEnum}}{{^isEnum}}{{datatype}}!{{/isEnum}}{{/requiredVars}}) {
+    public override init({{#requiredVars}}{{^-first}}, {{/-first}}{{name}}: {{#isEnum}}{{datatypeWithEnum}}!{{/isEnum}}{{^isEnum}}{{datatype}}!{{/isEnum}}{{/requiredVars}}) {
         {{#requiredVars}}
         self.{{name}} = {{name}}
         {{/requiredVars}}
