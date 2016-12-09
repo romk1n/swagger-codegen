@@ -12,19 +12,19 @@ import Foundation
 
 {{#isEnum}}
 
-open class {{classname}} : NSObject {
+public class {{classname}} : NSObject {
 
-    open enum {{classname}}Enum : String {
+    public enum {{classname}}Enum : String {
         case UNKNOWN = "UNKNOWN"{{#allowableValues}}{{#values}}
         case {{.}} = "{{.}}"{{/values}}{{/allowableValues}}
     }
 
     open var value: {{classname}}Enum
-    open init(string: String) {
+    public init(string: String) {
         self.value = {{classname}}Enum(rawValue: string) ?? .UNKNOWN
     }
 
-    open init(value: {{classname}}Enum) {
+    public init(value: {{classname}}Enum) {
         self.value = value
     }
 
