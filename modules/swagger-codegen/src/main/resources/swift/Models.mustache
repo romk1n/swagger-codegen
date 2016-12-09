@@ -132,7 +132,7 @@ open class Decoders {
             Decoders.addDecoder(clazz: Date.self) { (source: Any) -> Date in
                if let sourceString = source as? String {
                     for formatter in formatters {
-                        if let date = formatter.dateFromString(sourceString) {
+                        if let date = formatter.date(from: sourceString) {
                             return date
                         }
                     }
@@ -180,5 +180,5 @@ open class Decoders {
                 {{/isEnum}}
             }{{/model}}
             {{/models}}
-    }
+    }()
 }
