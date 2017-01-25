@@ -97,7 +97,7 @@ public class SwiftCodegen extends DefaultCodegen implements CodegenConfig {
                 );
         reservedWords = new HashSet<String>(
                 Arrays.asList(
-                              "ErrorResponse",
+                              "ErrorResponse", "description",
                               
                               // swift keywords
                               "Int", "Int32", "Int64", "Int64", "Float", "Double", "Bool", "Void", "String", "Character", "AnyObject", "Any", "Error", "URL",
